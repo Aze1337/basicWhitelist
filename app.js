@@ -38,7 +38,7 @@ app.post("/api/v1/signup", function(req,res){
     res.status(400).send({error:"username/password cannot be empty"})
   }else{
     if(req.body.username.length < 4){
-      res.status(400).send({erorr:"Your username must be atleast than 4 characters"})
+      res.status(400).send({error:"Your username must be atleast than 4 characters"})
     }else if(req.body.password.length < 8){
       res.status(400).send({error:"Your username must have a minimum of 8 characters"})
     }else{
@@ -58,6 +58,13 @@ app.post("/api/v1/signup", function(req,res){
   }
 })
 
-
+// POST /api/v1/login
+app.post("/api/v1/login", function(req,res){
+  if(req.body.username.length == 0 || req.body.password.length == 0){
+    res.status(400).send({error:"No empty fields"})
+  }else{
+    
+  }
+})
 
 app.listen(3000)
