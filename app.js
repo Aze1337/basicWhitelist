@@ -2,12 +2,11 @@ const express = require('express')
 const app = express()
 var bodyParser = require("body-parser")
 const mongoose = require('mongoose');
-
+const utils = require("./utils")
 
 
 
 app.use(bodyParser.json())
-
 
 mongoose.connect('mongodb://localhost/basic_whitelist', {
   useNewUrlParser: true,
@@ -20,6 +19,7 @@ mongoose.connect('mongodb://localhost/basic_whitelist', {
 var userSchema = mongoose.Schema({
   username: String,
   password: String,
+  auth:String
 });
 
 var userModel = mongoose.model('accounts', userSchema)
@@ -63,7 +63,23 @@ app.post("/api/v1/login", function(req,res){
   if(req.body.username.length == 0 || req.body.password.length == 0){
     res.status(400).send({error:"No empty fields"})
   }else{
-    
+    userModel.findOne({username:req.body.username}, function(err,doc){
+      if(err || doc == null){
+        res.status(404).send({error:"Username doesn't exist"})
+      }else{
+        if(doc.username == req.body.username && doc.password == req.body.password){
+          res.status(200).send({success:"Successfully logged in"})
+          doc.overwrite({
+            username:doc.username,
+            password:doc.password,
+            auth:utils.generateCookie()
+          })
+          doc.save()
+        }else{
+          res.status(404).send({error:"Wrong username/password"})
+        }
+      }
+    })
   }
 })
 

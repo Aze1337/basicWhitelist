@@ -9,3 +9,7 @@ function generateCookie() {
     }
     return result;
  }
+
+
+
+ module.exports.generateCookie = generateCookie
