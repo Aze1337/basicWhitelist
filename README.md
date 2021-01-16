@@ -6,8 +6,8 @@ basic whitelist system in node.js
 
 
 # Features
-API to create account
-API to log into account
+- API to create account
+- API to log into account
 
 
 
