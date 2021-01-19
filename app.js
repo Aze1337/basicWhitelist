@@ -83,4 +83,20 @@ app.post("/api/v1/login", function(req,res){
   }
 })
 
+
+// DELETE /api/v1/removeUser
+app.delete("/api/v1/removeUser", function(req,res){
+  if(req.body.username.length == 0){
+    res.status(400).send({error:"Cannot delete empty username..."})
+  }else{
+    userModel.deleteOne({username:req.body.username}, function(err, doc){
+      if(err || doc.deletedCount == 0){
+        res.status(404).send({error:"Cannot delete account"})
+      }else{
+        res.status(200).send({success:"Deleted account!"})
+      }
+    })
+  }
+})
+
 app.listen(3000)
