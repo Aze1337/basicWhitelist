@@ -22,3 +22,12 @@ The body payload must be in JSON and have the username and password . eg  - {"us
 If username and password matches , generate a random string "auth" which will be used as a cookie.
 
 
+# DELETE /api/v1/removeUser
+The body payload must contains the username required to be deleted
+
+
+
+
+# To add list ;
+- have a private password to use the removeUser api
+- maybe add some cooldown if too many requests are being sent from same ip 
