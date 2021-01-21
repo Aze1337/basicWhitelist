@@ -46,7 +46,8 @@ app.post("/api/v1/signup", function(req,res){
         if(!err && doc == null){
           var account = new userModel({
             username:req.body.username,
-            password:req.body.password
+            password:req.body.password,
+            auth:""
           })
           account.save()
           res.status(201).send({success:"Created account!"})
