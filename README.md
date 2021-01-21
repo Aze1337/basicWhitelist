@@ -29,5 +29,6 @@ The body payload must contains the username required to be deleted
 
 
 # To add list ;
-- have a private password to use the removeUser api
+- have a private password for creating account aswell (sent either as payload or header)
+- have a private password to use the removeUser api (sent either as payload or maybe header)
 - maybe add some cooldown if too many requests are being sent from same ip 
