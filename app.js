@@ -6,6 +6,12 @@ const utils = require("./utils")
 
 
 
+
+// this pw is used to create an account and delete one from the whitelist system
+var globalApiPassword = "randompwhaha123@@";
+
+
+
 app.use(bodyParser.json())
 
 mongoose.connect('mongodb://localhost/basic_whitelist', {
@@ -34,28 +40,32 @@ app.get('/', function (req, res) {
 
 // POST /api/v1/signup
 app.post("/api/v1/signup", function(req,res){
-  if(req.body.username.length == 0 || req.body.password.length == 0){
-    res.status(400).send({error:"username/password cannot be empty"})
-  }else{
-    if(req.body.username.length < 4){
-      res.status(400).send({error:"Your username must be atleast than 4 characters"})
-    }else if(req.body.password.length < 8){
-      res.status(400).send({error:"Your username must have a minimum of 8 characters"})
+  if(req.headers.key != null && req.headers.key == globalApiPassword){
+    if(req.body.username.length == 0 || req.body.password.length == 0){
+      res.status(400).send({error:"username/password cannot be empty"})
     }else{
-      userModel.findOne({username:req.body.username}, function(err,doc){
-        if(!err && doc == null){
-          var account = new userModel({
-            username:req.body.username,
-            password:req.body.password,
-            auth:""
-          })
-          account.save()
-          res.status(201).send({success:"Created account!"})
-        }else{
-          res.status(400).send({error:"Username is already used"})
-        }
-      })
+      if(req.body.username.length < 4){
+        res.status(400).send({error:"Your username must be atleast than 4 characters"})
+      }else if(req.body.password.length < 8){
+        res.status(400).send({error:"Your username must have a minimum of 8 characters"})
+      }else{
+        userModel.findOne({username:req.body.username}, function(err,doc){
+          if(!err && doc == null){
+            var account = new userModel({
+              username:req.body.username,
+              password:req.body.password,
+              auth:""
+            })
+            account.save()
+            res.status(201).send({success:"Created account!"})
+          }else{
+            res.status(400).send({error:"Username is already used"})
+          }
+        })
+      }
     }
+  }else{
+    res.status(401).send({error:"You do not have permission to use this api."})
   }
 })
 
@@ -87,16 +97,20 @@ app.post("/api/v1/login", function(req,res){
 
 // DELETE /api/v1/removeUser
 app.delete("/api/v1/removeUser", function(req,res){
-  if(req.body.username.length == 0){
-    res.status(400).send({error:"Cannot delete empty username..."})
+  if(req.headers.key != null && req.headers.key == globalApiPassword){
+    if(req.body.username.length == 0){
+      res.status(400).send({error:"Cannot delete empty username..."})
+    }else{
+      userModel.deleteOne({username:req.body.username}, function(err, doc){
+        if(err || doc.deletedCount == 0){
+          res.status(404).send({error:"Cannot delete account"})
+        }else{
+          res.status(200).send({success:"Deleted account!"})
+        }
+      })
+    }
   }else{
-    userModel.deleteOne({username:req.body.username}, function(err, doc){
-      if(err || doc.deletedCount == 0){
-        res.status(404).send({error:"Cannot delete account"})
-      }else{
-        res.status(200).send({success:"Deleted account!"})
-      }
-    })
+    res.status(401).send({error:"You do not have permission to use this api."})
   }
 })
 
