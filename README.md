@@ -8,6 +8,7 @@ basic whitelist system in node.js
 # Features
 - API to create account
 - API to log into account
+- API to delete account
 - Global password to add account to whitelist or remove account
 
 
