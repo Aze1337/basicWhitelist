@@ -30,7 +30,7 @@ The body payload must contains the username required to be deleted
 
 
 # To add list ;
-- maybe add some cooldown if too many requests are being sent from same ip 
 - add bcrypt
-- add api to update password rather than having to delete and create a new account with the same username
-- save ip's logs of each user with date time
+- add some cooldown if too many requests are being sent from same ip (prevent people from spamming with one ip to slow down the server) 
+- add api to update password rather than having to delete and create a new account with the same username (less bandwith usage if one request rather than two)
+- save ip's logs of each user with date time 
