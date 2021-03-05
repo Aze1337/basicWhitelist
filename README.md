@@ -10,7 +10,7 @@ basic whitelist system in node.js
 - API to log into account
 - API to delete account
 - Global password to add account to whitelist or remove account
-
+- Passwords are hashed with bcrypt
 
 
 # POST /api/v1/signup
@@ -30,7 +30,6 @@ The body payload must contains the username required to be deleted
 
 
 # To add list ;
-- add bcrypt
 - add some cooldown if too many requests are being sent from same ip (prevent people from spamming with one ip to slow down the server) 
 - add api to update password rather than having to delete and create a new account with the same username (less bandwith usage if one request rather than two)
 - save ip's logs of each user with date time 
