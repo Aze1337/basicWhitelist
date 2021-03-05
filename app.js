@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 var bodyParser = require("body-parser")
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const utils = require("./utils")
 
@@ -9,6 +10,8 @@ const utils = require("./utils")
 
 // this pw is used to create an account and delete one from the whitelist system
 var globalApiPassword = "randompwhaha123@@";
+//salt rounds bcrypt #10
+const saltRounds = 10;
 
 
 
@@ -50,17 +53,22 @@ app.post("/api/v1/signup", function(req,res){
         res.status(400).send({error:"Your username must have a minimum of 8 characters"})
       }else{
         userModel.findOne({username:req.body.username}, function(err,doc){
-          if(!err && doc == null){
-            var account = new userModel({
-              username:req.body.username,
-              password:req.body.password,
-              auth:""
-            })
-            account.save()
-            res.status(201).send({success:"Created account!"})
-          }else{
-            res.status(400).send({error:"Username is already used"})
-          }
+
+          bcrypt.genSalt(saltRounds, function(err, salt) {
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
+              if(!err && doc == null){
+                var account = new userModel({
+                  username:req.body.username,
+                  password:hash,
+                  auth:""
+                })
+                account.save()
+                res.status(201).send({success:"Created account!"})
+              }else{
+                res.status(400).send({error:"Username is already used"})
+              }
+            });
+            });
         })
       }
     }
@@ -78,17 +86,19 @@ app.post("/api/v1/login", function(req,res){
       if(err || doc == null){
         res.status(404).send({error:"Username doesn't exist"})
       }else{
-        if(doc.username == req.body.username && doc.password == req.body.password){
-          res.status(200).send({success:"Successfully logged in"})
-          doc.overwrite({
-            username:doc.username,
-            password:doc.password,
-            auth:utils.generateCookie()
-          })
-          doc.save()
-        }else{
-          res.status(404).send({error:"Wrong username/password"})
-        }
+        bcrypt.compare(req.body.password, doc.password, function(err, result) {
+          if(doc.username == req.body.username && result == true){
+            res.status(200).send({success:"Successfully logged in"})
+            doc.overwrite({
+              username:doc.username,
+              password:doc.password,
+              auth:utils.generateCookie()
+            })
+            doc.save()
+          }else{
+            res.status(404).send({error:"Wrong username/password"})
+          }
+        });
       }
     })
   }
