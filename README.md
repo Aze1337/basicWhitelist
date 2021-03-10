@@ -15,7 +15,7 @@ basic whitelist system in node.js
 
 # POST /api/v1/signup
 The body payload must be in JSON and have the username and password . eg  - {"username":"username", "password":"pwhere"}. 
--- Header "key" is required to use with chosen global password.
+- Header "key" is required to use with chosen global password.
 
 
 # POST /api/v1/login
@@ -25,7 +25,7 @@ If username and password matches , generate a random string "auth" which will be
 
 # DELETE /api/v1/removeUser
 The body payload must contains the username required to be deleted. 
--- Header "key" is required to use with chosen global password.
+- Header "key" is required to use with chosen global password.
 
 
 
